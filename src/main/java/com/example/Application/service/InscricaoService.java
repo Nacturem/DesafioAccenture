@@ -35,14 +35,43 @@ public class InscricaoService {
         return inscricaoRepository.findAll();
     }
 
-    public List<Curso> listarCursosPorAluno(Long alunoId) {
-        List<Inscricao> inscricoes = inscricaoRepository.findByAlunoId(alunoId);
-        return inscricoes.stream().map(Inscricao::getCurso).toList();
+    public Inscricao salvarInscricao(Long alunoId, Long cursoId) {
+        Aluno aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Aluno não encontrado"));
+        // Verifica se o curso existe
+        Curso curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado"));
+
+        // Verifica se já existe uma inscrição para esse aluno e curso
+        boolean jaInscrito = inscricaoRepository.findByAlunoId(alunoId)
+                .stream()
+                .anyMatch(inscricao -> inscricao.getCurso().getId().equals(cursoId));
+
+        if (jaInscrito) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno já está inscrito neste curso");
+        }
+
+        // Cria a inscrição
+        Inscricao novaInscricao = new Inscricao();
+        novaInscricao.setAluno(aluno);
+        novaInscricao.setCurso(curso);
+        novaInscricao.setDataInscricao(LocalDate.now());
+
+        return inscricaoRepository.save(novaInscricao);
     }
 
+    public List<Curso> listarCursosPorAluno(Long alunoId) {
+        return inscricaoRepository.findByAlunoId(alunoId)
+                .stream()
+                .map(Inscricao::getCurso)
+                .collect(Collectors.toList());
+    }
+    // Listar alunos inscritos em um curso
     public List<Aluno> listarAlunosPorCurso(Long cursoId) {
-        List<Inscricao> inscricoes = inscricaoRepository.findByCursoId(cursoId);
-        return inscricoes.stream().map(Inscricao::getAluno).toList();
+        return inscricaoRepository.findByCursoId(cursoId)
+                .stream()
+                .map(Inscricao::getAluno)
+                .collect(Collectors.toList());
     }
 
     public Inscricao salvarInscricao(Inscricao inscricao) {

@@ -29,19 +29,19 @@ public class AlunoDto implements Serializable {
 
     }
     public AlunoDto(Aluno obj) {
-        id = obj.getAlunoId();
+        id = obj.getId();
         nome = obj.getNome();
         email = obj.getEmail();
         dataCadastro = obj.getDataCadastro();
 
     }
 
-    public Long getAlunoId() {
+    public Long getId() {
         return id;
     }
 
-    public void setAlunoId(Long alunoId) {
-        this.id = alunoId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {

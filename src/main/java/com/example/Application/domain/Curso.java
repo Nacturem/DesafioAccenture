@@ -1,6 +1,7 @@
 package com.example.Application.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ public class Curso implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCriacao;
 
+    //@JsonManagedReference
     @OneToMany(mappedBy = "curso")
     private List<Inscricao> inscricoes = new ArrayList<>();
 
@@ -34,16 +36,13 @@ public class Curso implements Serializable {
         this.dataCriacao = dataCriacao;
     }
 
-    public Long getCursoId() {
-        return id;
-    }
 
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
-        id = id;
+        this.id = id;
     }
 
     public String getCurso() {
@@ -83,11 +82,12 @@ public class Curso implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Curso curso = (Curso) o;
-        return id.equals(curso.id);
+        return Objects.equals(id, curso.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

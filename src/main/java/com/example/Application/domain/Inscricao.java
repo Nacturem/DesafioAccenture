@@ -1,6 +1,8 @@
 package com.example.Application.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -13,39 +15,36 @@ import java.util.Objects;
 public class Inscricao implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @EmbeddedId
-    private InscricaoPK id;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     @ManyToOne
-    @MapsId("alunoId")
     @JoinColumn(name = "aluno_id", nullable = false)
     private Aluno aluno;
 
     @ManyToOne
-    @MapsId("cursoId")
     @JoinColumn(name = "curso_id", nullable = false)
     private Curso curso;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataInscricao;
 
+    public Inscricao( ) {
 
-    public Inscricao() {
     }
 
-    public Inscricao(Aluno aluno, Curso curso, LocalDate dataInscricao) {
-        this.id = new InscricaoPK(aluno.getAlunoId(), curso.getCursoId());
+    public Inscricao(Long id, Aluno aluno, Curso curso, LocalDate dataInscricao) {
+        this.id = id;
         this.aluno = aluno;
         this.curso = curso;
         this.dataInscricao = dataInscricao;
     }
 
-
-    public InscricaoPK getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(InscricaoPK id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -79,12 +78,14 @@ public class Inscricao implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Inscricao inscricao = (Inscricao) o;
-        return Objects.equals(id, inscricao.id) && Objects.equals(aluno, inscricao.aluno) && Objects.equals(curso, inscricao.curso) && Objects.equals(dataInscricao, inscricao.dataInscricao);
+        return Objects.equals(id, inscricao.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, aluno, curso, dataInscricao);
+        return Objects.hash(id);
     }
 }
+
+
 

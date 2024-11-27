@@ -24,14 +24,17 @@ public class InscricaoController {
         return ResponseEntity.ok(list);
     }
 
+
     @GetMapping("/cursos/{alunoId}")
-    public List<Curso> listarCursosPorAluno(@PathVariable Long alunoId) {
-        return service.listarCursosPorAluno(alunoId);
+    public ResponseEntity<List<Curso>> listarCursosPorAluno(@PathVariable Long alunoId) {
+        List<Curso> cursos = service.listarCursosPorAluno(alunoId);
+        return ResponseEntity.ok(cursos);
     }
 
     @GetMapping("/alunos/{cursoId}")
-    public List<Aluno> listarAlunosPorCurso(@PathVariable Long cursoId) {
-        return service.listarAlunosPorCurso(cursoId);
+    public ResponseEntity<List<Aluno>> listarAlunosPorCurso(@PathVariable Long cursoId) {
+        List<Aluno> alunos = service.listarAlunosPorCurso(cursoId);
+        return ResponseEntity.ok(alunos);
     }
     @PostMapping
     public ResponseEntity<Inscricao> criarInscricao(@RequestBody Inscricao inscricao) {

@@ -34,11 +34,18 @@ public class CursoController {
         Curso obj = service.findById(id);
         return ResponseEntity.ok().body(obj);
     }
+
+    @GetMapping("/{id}/alunos")
+    public ResponseEntity<List<AlunoDto>> findAlunosByCurso(@PathVariable Long id) {
+        List<Aluno> alunos = service.findAlunosByCurso(id);
+        List<AlunoDto> alunosDto = alunos.stream().map(AlunoDto::new).collect(Collectors.toList());
+        return ResponseEntity.ok().body(alunosDto);
+    }
     @RequestMapping(method=RequestMethod.POST)
     public ResponseEntity<Void> insert(@RequestBody CursoDto objDto) {
         Curso obj = service.fromDto(objDto);
         obj = service.Insert(obj);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getCursoId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 

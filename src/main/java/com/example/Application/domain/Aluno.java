@@ -3,6 +3,7 @@ package com.example.Application.domain;
 
 import com.example.Application.dto.AlunoDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -19,12 +20,12 @@ public class Aluno implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    //@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
     private String nome;
     private String email;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCadastro;
-    @OneToMany(mappedBy = "aluno")
+
+    @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
     private List<Inscricao> inscricoes = new ArrayList<>();
 
 
@@ -32,14 +33,13 @@ public class Aluno implements Serializable {
     }
 
     public Aluno(Long id, String nome, String email, LocalDate dataCadastro) {
-       super();
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.dataCadastro = dataCadastro;
     }
 
-    public Long getAlunoId() {
+    public Long getId() {
         return id;
     }
 
@@ -80,7 +80,7 @@ public class Aluno implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Aluno aluno = (Aluno) o;
-        return id.equals(aluno.id);
+        return Objects.equals(id, aluno.id);
     }
 
     @Override

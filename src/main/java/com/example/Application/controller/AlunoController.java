@@ -2,6 +2,7 @@ package com.example.Application.controller;
 
 
 import com.example.Application.domain.Aluno;
+import com.example.Application.domain.Curso;
 import com.example.Application.dto.AlunoDto;
 import com.example.Application.dto.CursoDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class AlunoController {
      @Autowired
      private AlunoService service;
 
-     @RequestMapping(method=RequestMethod.GET)
+     @GetMapping
      public ResponseEntity<List<AlunoDto>> findAll() {
           List<Aluno> list = service.findAll();
           List<AlunoDto> listDto = list.stream().map(x -> new AlunoDto(x)).collect(Collectors.toList());
@@ -33,11 +34,19 @@ public class AlunoController {
           Aluno obj = service.findById(id);
           return ResponseEntity.ok().body(obj);
      }
-     @RequestMapping(method=RequestMethod.POST)
+
+     @GetMapping("/{id}/cursos")
+     public ResponseEntity<List<CursoDto>> findCursosByAluno(@PathVariable Long id) {
+          List<Curso> cursos = service.findCursosByAluno(id);
+          List<CursoDto> cursosDto = cursos.stream().map(CursoDto::new).collect(Collectors.toList());
+          return ResponseEntity.ok().body(cursosDto);
+     }
+
+     @PostMapping
      public ResponseEntity<Void> insert(@RequestBody AlunoDto objDto) {
           Aluno obj = service.fromDto(objDto);
           obj = service.insert(obj);
-          URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getAlunoId()).toUri();
+          URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
           return ResponseEntity.created(uri).build();
      }
 
