@@ -22,8 +22,11 @@ public class Curso implements Serializable {
     private LocalDate dataCriacao;
 
     //@JsonManagedReference
-    @OneToMany(mappedBy = "curso")
-    private List<Inscricao> inscricoes = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "alunos")
+    Set<Aluno> alunos = new HashSet<>();
+
+
 
     public Curso() {
 
@@ -69,12 +72,12 @@ public class Curso implements Serializable {
         this.dataCriacao = dataCriacao;
     }
 
-    public List<Inscricao> getInscricoes() {
-        return inscricoes;
+    public Set<Aluno> getAlunos() {
+        return alunos;
     }
 
-    public void setInscricoes(List<Inscricao> inscricoes) {
-        this.inscricoes = inscricoes;
+    public void setAlunos(Set<Aluno> alunos) {
+        this.alunos = alunos;
     }
 
     @Override

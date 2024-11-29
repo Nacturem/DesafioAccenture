@@ -8,9 +8,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name= "tb_aluno")
@@ -25,8 +23,13 @@ public class Aluno implements Serializable {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCadastro;
 
-    @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
-    private List<Inscricao> inscricoes = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name="inscricao",
+            joinColumns = @JoinColumn(name =" aluno_id"),
+            inverseJoinColumns = @JoinColumn(name = "curso_id")
+    )
+    Set<Curso> cursos = new HashSet<>();
 
 
     public Aluno() {
@@ -67,12 +70,12 @@ public class Aluno implements Serializable {
         this.dataCadastro = dataCadastro;
     }
 
-    public List<Inscricao> getInscricoes() {
-        return inscricoes;
+    public Set<Curso> getCursos() {
+        return cursos;
     }
 
-    public void setInscricoes(List<Inscricao> inscricoes) {
-        this.inscricoes = inscricoes;
+    public void setCursos(Set<Curso> cursos) {
+        this.cursos = cursos;
     }
 
     @Override
