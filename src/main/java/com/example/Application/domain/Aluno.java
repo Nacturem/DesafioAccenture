@@ -19,18 +19,17 @@ public class Aluno implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nome;
-    private String email;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate dataCadastro;
-
     @ManyToMany
     @JoinTable(
             name="inscricao",
             joinColumns = @JoinColumn(name =" aluno_id"),
             inverseJoinColumns = @JoinColumn(name = "curso_id")
     )
-    Set<Curso> cursos = new HashSet<>();
+    private Set<Curso> cursos = new HashSet<>();
 
+    private String email;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataCadastro;
 
     public Aluno() {
     }

@@ -14,7 +14,7 @@ public class CursoDto implements Serializable {
         private static final long serialVersionUID = 1L;
 
         private Long id;
-        private String curso;
+        private String nome;
         private String descricao;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCriacao;
@@ -27,7 +27,7 @@ public class CursoDto implements Serializable {
 
     public CursoDto(Curso obj) {
         id = obj.getId();
-        curso = obj.getCurso();
+        nome = obj.getNome();
         descricao = obj.getDescricao();
         dataCriacao = obj.getDataCriacao();
 
@@ -41,12 +41,12 @@ public class CursoDto implements Serializable {
         this.id = id;
     }
 
-    public String getCurso() {
-        return curso;
+    public String getNome() {
+        return nome;
     }
 
-    public void setCurso(String curso) {
-        this.curso = curso;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getDescricao() {

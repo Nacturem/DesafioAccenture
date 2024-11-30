@@ -5,7 +5,10 @@ import com.example.Application.domain.Curso;
 import com.example.Application.domain.Inscricao;
 import com.example.Application.dto.AlunoDto;
 import com.example.Application.dto.CursoDto;
+import com.example.Application.repository.CursoRepository;
 import com.example.Application.repository.InscricaoRepository;
+import com.example.Application.service.Exception.AlunoNaoEncontradoException;
+import com.example.Application.service.Exception.CursoNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -22,18 +26,29 @@ public class AlunoService {
 
 
     @Autowired
-    private AlunoRepository repository;
-
+    private AlunoRepository alunoRepository;
     @Autowired
-    private InscricaoRepository inscricaoRepository;
+    private CursoRepository cursoRepository;
 
 
-
-    public List<Aluno> findAll(){
-        return repository.findAll();
-
+    public Aluno salvar(Aluno aluno) {
+        return alunoRepository.save(aluno);
     }
 
+    public Aluno buscarAlunosPorId(Long id) {
+        return alunoRepository.findById(id)
+                .orElseThrow(() -> new AlunoNaoEncontradoException("Aluno não encontrado"));
+    }
+
+    public Set<Curso> listarCursosDoAluno(Long alunoId) {
+        Aluno aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new AlunoNaoEncontradoException("Aluno não encontrado"));
+        return aluno.getCursos();
+
+    }
+}
+
+/*
     public Aluno findById(Long alunoId) {
         Optional<Aluno> obj = repository.findById(alunoId);
         return obj.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Aluno não encontrado"));
@@ -54,8 +69,9 @@ public class AlunoService {
     public Aluno fromDto(AlunoDto objDto) {
         return new Aluno(objDto.getId(), objDto.getNome(), objDto.getEmail(), objDto.getDataCadastro());
     }
+    */
 
-    }
+
 
 
 

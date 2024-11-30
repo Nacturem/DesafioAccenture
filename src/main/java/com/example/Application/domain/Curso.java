@@ -16,15 +16,13 @@ public class Curso implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String curso;
+    private String nome;
+    @ManyToMany(mappedBy = "cursos")
+    private Set<Aluno> alunos = new HashSet<>();
+
     private String descricao;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCriacao;
-
-    //@JsonManagedReference
-
-    @ManyToMany(mappedBy = "alunos")
-    Set<Aluno> alunos = new HashSet<>();
 
 
 
@@ -32,9 +30,9 @@ public class Curso implements Serializable {
 
     }
 
-    public Curso(Long id, String curso, String descricao, LocalDate dataCriacao) {
+    public Curso(Long id, String nome, String descricao, LocalDate dataCriacao) {
         this.id = id;
-        this.curso = curso;
+        this.nome = nome;
         this.descricao = descricao;
         this.dataCriacao = dataCriacao;
     }
@@ -48,12 +46,12 @@ public class Curso implements Serializable {
         this.id = id;
     }
 
-    public String getCurso() {
-        return curso;
+    public String getNome() {
+        return nome;
     }
 
-    public void setCurso(String curso) {
-        this.curso = curso;
+    public void setNome(String curso) {
+        this.nome = curso;
     }
 
     public String getDescricao() {

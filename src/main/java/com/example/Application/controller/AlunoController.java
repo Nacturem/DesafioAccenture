@@ -5,14 +5,18 @@ import com.example.Application.domain.Aluno;
 import com.example.Application.domain.Curso;
 import com.example.Application.dto.AlunoDto;
 import com.example.Application.dto.CursoDto;
+import com.example.Application.repository.AlunoRepository;
+import com.example.Application.service.Exception.AlunoNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.Application.service.AlunoService;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -20,15 +24,48 @@ import java.util.stream.Collectors;
 @RequestMapping("/alunos")
 public class AlunoController {
 
-     @Autowired
-     private AlunoService service;
 
+     private final AlunoService alunoService;
+
+     @Autowired
+     public AlunoController(AlunoService alunoService) {
+          this.alunoService = alunoService;
+     }
+
+     @GetMapping("/alunos/{id}/cursos")
+     public ResponseEntity<Set<Curso>> cursosDoAluno(@PathVariable Long id) {
+          Aluno aluno = alunoService.buscarAlunosPorId(id);
+          return ResponseEntity.ok(aluno.getCursos());
+     }
+     @PostMapping
+     public ResponseEntity<Aluno> cadastrarAluno(@RequestBody Aluno aluno) {
+          Aluno alunoSalvo = alunoService.salvar(aluno);
+          URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                  .path("/{id}")
+                  .buildAndExpand(alunoSalvo.getId())
+                  .toUri();
+          return ResponseEntity.created(location).body(alunoSalvo);
+     }
+
+     @GetMapping("/{alunoId}/cursos")
+     public ResponseEntity<Set<Curso>> listarCursosDoAluno(@PathVariable Long alunoId) {
+         try {
+              Set<Curso> cursos = alunoService.listarCursosDoAluno(alunoId);
+              return ResponseEntity.ok(cursos);
+         }catch (AlunoNaoEncontradoException e) {
+              return ResponseEntity.notFound().build();
+         }
+     }
+
+}
+
+     /*
      @GetMapping
      public ResponseEntity<List<AlunoDto>> findAll() {
           List<Aluno> list = service.findAll();
           List<AlunoDto> listDto = list.stream().map(x -> new AlunoDto(x)).collect(Collectors.toList());
           return ResponseEntity.ok().body(listDto);
-     }
+
      @GetMapping(value = "/{id}")
      public ResponseEntity<Aluno> findById(@PathVariable Long id) {
           Aluno obj = service.findById(id);
@@ -49,5 +86,6 @@ public class AlunoController {
           URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
           return ResponseEntity.created(uri).build();
      }
+     */
 
-}
+
